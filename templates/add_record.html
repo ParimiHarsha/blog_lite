@@ -1,0 +1,24 @@
+Add a new record for {{tracer_name}}
+
+<form action="/{{tracer_name}}/{{client_name}}/add_record" method="POST" id="add_record">
+    <div>
+        <label>Value:</label>
+        <input type='text' name='record_value' required />
+    </div>
+
+    <div> 
+        <label>Notes</label>
+        <input type="text" name="record_notes"  />
+    </div>
+    
+    <div>
+        <label>Date</label>
+        <input type='date' name='record_date' />
+
+    <div>
+        <input type="submit" value = "Submit">
+    </div>
+</form>
+
+
+

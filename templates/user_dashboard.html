@@ -1,0 +1,23 @@
+Hello this your Analyzone
+
+<table>
+    <tr>
+        <th>Tracer</th>
+        <th>Actions</th>
+    </tr>
+    {%for tracer in tracers%} {%if tracers|length == 0%}
+    <p>You have no tracers - <a href="......."> Add Tracers </a></p>
+    {% else %}
+    <tr>
+        <td><a href="/{{tracer}}/{{client_name}}"> {{tracer}}</a></td>
+        <td>
+            <a href="/{{tracer}}/{{client_name}}/add_record"> Add record</a>
+            <a href="/{{tracer}}/{{client_name}}/delete_tracer"
+                >Delete Tracer</a
+            >
+        </td>
+    </tr>
+
+    {% endif %} {%endfor%}
+</table>
+<button><a href="/add_tracer/{{client_name}}">Add Tracer</a></button>
