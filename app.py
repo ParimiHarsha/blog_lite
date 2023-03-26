@@ -5,33 +5,29 @@ from flask_jwt_extended import JWTManager
 from flask_login import LoginManager, current_user, login_required, login_user
 from flask_security import Security, SQLAlchemyUserDatastore
 
+from config import LocalDevelopmentConfig
 from forms import BlogForm, LoginForm, SignupForm
 from models import Blog, Role, User, db
 
-current_dir = os.path.abspath(
-    os.path.dirname(__file__)
-)  # Used to get the path for the database
-
-
 app = Flask(__name__)
-app.config.from_object("config.Config")
+app.config.from_object(LocalDevelopmentConfig)
 
 # Define the Flask-Security data store
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
 # Initialize Flask-Security and Flask-JWT-Extended
-security = Security()
-jwt = JWTManager()
-login_manager = LoginManager()
-login_manager.init_app(app)  # Initialize Flask-Login
-login_manager.login_view = "login"
+security = Security(app=app, datastore=user_datastore)
+# jwt = JWTManager()
+# login_manager = LoginManager()
+# login_manager.init_app(app)  # Initialize Flask-Login
+# login_manager.login_view = "login"
 db.init_app(app)
-
+app.app_context().push()
 
 # helper functions
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(int(user_id))
 
 
 @app.route("/")
@@ -40,49 +36,49 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    """Login Controller"""
+# @app.route("/login", methods=["GET", "POST"])
+# def login():
+#     """Login Controller"""
 
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash("Invalid email or password")
-            return redirect(url_for("login"))
-        login_user(user, remember=form.remember_me.data)
-        return redirect(url_for("feed"))
-    return render_template("login.html", title="Log in", form=form)
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         user = User.query.filter_by(email=form.email.data).first()
+#         if user is None or not user.check_password(form.password.data):
+#             flash("Invalid email or password")
+#             return redirect(url_for("login"))
+#         login_user(user, remember=form.remember_me.data)
+#         return redirect(url_for("feed"))
+#     return render_template("login.html", title="Log in", form=form)
 
 
-@app.route("/signup", methods=["GET", "POST"])
-def signup():
-    """Signup Controller"""
+# @app.route("/signup", methods=["GET", "POST"])
+# def signup():
+#     """Signup Controller"""
 
-    form = SignupForm()
-    if form.validate_on_submit():
-        # Check if the username already exists in the database
-        existing_user = User.query.filter_by(username=form.username.data).first()
-        if existing_user:
-            flash("Username is already taken. Please choose a different username.")
-            return redirect(url_for("signup"))
+#     form = SignupForm()
+#     if form.validate_on_submit():
+#         # Check if the username already exists in the database
+#         existing_user = User.query.filter_by(username=form.username.data).first()
+#         if existing_user:
+#             flash("Username is already taken. Please choose a different username.")
+#             return redirect(url_for("signup"))
 
-        # User name is unique
-        user = User(
-            username=form.username.data,
-            email=form.email.data,
-            password=form.password.data,
-        )
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash("Congratulations, you are now a registered user!")
-        return redirect(url_for("login"))
-    return render_template("signup.html", title="Sign Up", form=form)
+#         # User name is unique
+#         user = User(
+#             username=form.username.data,
+#             email=form.email.data,
+#             password=form.password.data,
+#         )
+#         user.set_password(form.password.data)
+#         db.session.add(user)
+#         db.session.commit()
+#         flash("Congratulations, you are now a registered user!")
+#         return redirect(url_for("login"))
+#     return render_template("signup.html", title="Sign Up", form=form)
 
 
 @app.route("/feed")
-# @login_required
+@login_required
 def feed():
     """Feed Controller"""
 
@@ -102,9 +98,9 @@ def feed():
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        # db.drop_all()  # to reset all the tables in the database
-        db.create_all()
+    # with app.app_context():
+    # db.create_all()
+    # db.drop_all()  # to reset all the tables in the database
     app.run(host="0.0.0.0", debug=True, port=8080)
 
 
