@@ -2,7 +2,7 @@ Vue.component('message-board', {
     data: {
         visitor_name: '',
         visitor_message: '',
-        message: '',
+        message: '',w
     },
 });
 

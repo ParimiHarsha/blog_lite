@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User Profile</title>
+  </head>
+  <body>
+    <h1>User Profile</h1>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Number of Blogs:</strong> {{ blog_count }}</p>
+    <p><strong>Number of Followers:</strong> {{ follower_count }}</p>
+    <p><strong>Number of Following:</strong> {{ following_count }}</p>
+
+    <h2>Blog Posts</h2>
+    {% for post in posts %}
+    <div>
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.caption }}</p>
+      {% if post.image_url %}
+      <img src="{{ post.image_url }}" alt="{{ post.title }}" style="max-width: 100%">
+      {% endif %}
+      <p><small>Posted on {{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
+    </div>
+    {% endfor %}
+  </body>
+</html>

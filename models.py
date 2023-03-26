@@ -27,19 +27,27 @@ class User(db.Model, UserMixin):
 class Blog(db.Model):
     """This is the model for the blog table in blog-store.db"""
 
-    id = db.Column(db.Integer, primary_key=True)
+    __table_name__ = "blog"
+    id = db.Column(db.Integer(), primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    caption = db.Column(db.String(250), nullable=False)
+    image_url = db.Column(db.String(250))
+    # content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
+        db.DateTime, nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow
     )
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), nullable=False)
+    user = db.relationship("User", backref="blogs")
+
+    def __repr__(self):
+        return f"<Blog {self.id}>"
 
 
 class Friend(db.Model):
     """This is the model for the friends relationship in blog-store.db"""
 
+    __table_name__ = "friend"
     id = db.Column(db.Integer, primary_key=True)
     user_id_1 = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user_id_2 = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
@@ -48,6 +56,7 @@ class Friend(db.Model):
 class UserBlog(db.Model):
     """This is the model for the user-blog relationship in blog-store.db"""
 
+    __table_name__ = "user_blog"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"), nullable=False)
