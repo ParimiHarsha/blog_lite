@@ -23,6 +23,15 @@ class User(db.Model, UserMixin):
         "Role", secondary="user_roles", backref=db.backref("users", lazy="dynamic")
     )
 
+    # add a many-to-many relationship with itself through the Friend model
+    friends = db.relationship(
+        "User",
+        secondary="friend",
+        primaryjoin="User.id==Friend.user_id_1",
+        secondaryjoin="User.id==Friend.user_id_2",
+        backref=db.backref("friend_of", lazy="dynamic"),
+    )
+
 
 class Blog(db.Model):
     """This is the model for the blog table in blog-store.db"""
