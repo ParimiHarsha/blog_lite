@@ -9,6 +9,9 @@
     {% for post in posts %}
     <div>
         <h3>{{ post.title }}</h3>
+        {% if post.image_url %}
+          <img src="{{ post.image_url }}" class="card-img-top" alt="{{ post.title }}" width="300" height="auto">
+        {% endif %}
         <p>By {{ post.user.username }} on {{ post.updated_at }}</p>
         <p>{{ post.body }}</p>
     </div>

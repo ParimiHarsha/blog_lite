@@ -6,6 +6,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
+friends = db.Table(
+    "friends",
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+    db.Column("friend_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+)
 # Define a User model for Flask-Security
 class User(db.Model, UserMixin):
     """This is the model for the user table in blog-store.db"""
@@ -26,10 +31,12 @@ class User(db.Model, UserMixin):
     # add a many-to-many relationship with itself through the Friend model
     friends = db.relationship(
         "User",
-        secondary="friend",
-        primaryjoin="User.id==Friend.user_id_1",
-        secondaryjoin="User.id==Friend.user_id_2",
-        backref=db.backref("friend_of", lazy="dynamic"),
+        secondary=friends,
+        primaryjoin=("friends.c.user_id == User.id"),
+        secondaryjoin=("friends.c.friend_id == User.id"),
+        # backref=db.backref("friend_of", lazy="dynamic"),
+        backref="followers",
+        lazy="dynamic",
     )
 
 
@@ -53,13 +60,13 @@ class Blog(db.Model):
         return f"<Blog {self.id}>"
 
 
-class Friend(db.Model):
-    """This is the model for the friends relationship in blog-store.db"""
+# class Friends(db.Model):
+#     """This is the model for the friends relationship in blog-store.db"""
 
-    __table_name__ = "friend"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id_1 = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    user_id_2 = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+#     __table_name__ = "friends"
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id_1 = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+#     user_id_2 = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
 
 class UserBlog(db.Model):

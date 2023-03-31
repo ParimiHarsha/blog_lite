@@ -103,9 +103,8 @@ def delete_blog(id):
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     blog_count = Blog.query.filter_by(user_id=user.id).count()
-    breakpoint()
     followers_count = len(user.followers)
-    following_count = len(user.followed)
+    following_count = user.friends.count()
     blog_posts = Blog.query.filter_by(user_id=user.id).all()
     return render_template(
         "user_profile.html",
@@ -118,7 +117,7 @@ def user_profile(username):
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-        db.drop_all()  # to reset all the tables in the database
+    # with app.app_context():
+    #     db.drop_all()  # to reset all the tables in the database
+    #     db.create_all()
     app.run(host="0.0.0.0", debug=True, port=8080)

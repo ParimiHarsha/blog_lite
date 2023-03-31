@@ -22,5 +22,10 @@
       <p><small>Posted on {{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
     </div>
     {% endfor %}
+    <div class="row">
+      <div class="col-12">
+        <a href="{{ url_for('feed') }}" class="btn btn-primary">Back to Feed</a>
+      </div>
+    </div>
   </body>
 </html>
