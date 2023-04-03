@@ -1,14 +1,13 @@
-import os
 from datetime import datetime
 
-from flask import Flask, flash, redirect, render_template, request, url_for
-from flask_jwt_extended import JWTManager
-from flask_login import LoginManager, current_user, login_required, login_user
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
+from flask_login import current_user, login_required, login_user
+from flask_restful import Api, Resource
 from flask_security import Security, SQLAlchemyUserDatastore
 
 from config import LocalDevelopmentConfig
-from forms import BlogForm, LoginForm, SignupForm
-from models import Blog, Role, User, db
+from forms import BlogForm
+from models import Blog, Friends, Role, User, db
 
 app = Flask(__name__)
 app.config.from_object(LocalDevelopmentConfig)
@@ -20,6 +19,7 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app=app, datastore=user_datastore)
 
 db.init_app(app)
+api = Api(app)
 app.app_context().push()
 
 
@@ -103,8 +103,8 @@ def delete_blog(id):
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     blog_count = Blog.query.filter_by(user_id=user.id).count()
-    followers_count = len(user.followers)
-    following_count = user.friends.count()
+    followers_count = len(user.followers.all())
+    following_count = len(user.friends)
     blog_posts = Blog.query.filter_by(user_id=user.id).all()
     return render_template(
         "user_profile.html",
@@ -114,6 +114,50 @@ def user_profile(username):
         following_count=following_count,
         blog_posts=blog_posts,
     )
+
+
+class UserAPI(Resource):
+    # get user
+    def get():
+        query = request.args.get("query")
+        users = User.query.filter(User.username.contains(query)).all()
+        return jsonify({"users": [user.serialize() for user in users]})
+
+    # get user profile
+    def get(user_id):
+        user = User.query.get(user_id)
+        if user is None:
+            return jsonify({"error": "User not found"}), 404
+        return jsonify(user.serialize())
+
+
+class FollowAPI(Resource):
+    # get followers
+    def get(self, user_id):
+        user = User.query.get(user_id)
+        if user is None:
+            return jsonify({"error": "User not found"}), 404
+        followers = Friends.query.filter_by(followed_id=user_id).all()
+        return jsonify(
+            {"followers": [follower.follower.serialize() for follower in followers]}
+        )
+
+    # user following
+    def post(self, user_id):
+        user = User.query.get(user_id)
+        if user is None:
+            return jsonify({"error": "User not found"}), 404
+        following = Friends.query.filter_by(follower_id=user_id).all()
+        return jsonify(
+            {"following": [followed.followed.serialize() for followed in following]}
+        )
+
+
+api.add_resource(UserAPI, "/api/user", "/api/<int:user_id>")
+api.add_resource(FollowAPI, "/api/<int:user_id>")
+
+if __name__ == "__main__":
+    app.run()
 
 
 if __name__ == "__main__":

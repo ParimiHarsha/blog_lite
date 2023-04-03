@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
-friends = db.Table(
+Friends = db.Table(
     "friends",
     db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
     db.Column("friend_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
@@ -31,12 +31,11 @@ class User(db.Model, UserMixin):
     # add a many-to-many relationship with itself through the Friend model
     friends = db.relationship(
         "User",
-        secondary=friends,
+        secondary=Friends,
         primaryjoin=("friends.c.user_id == User.id"),
         secondaryjoin=("friends.c.friend_id == User.id"),
-        # backref=db.backref("friend_of", lazy="dynamic"),
-        backref="followers",
-        lazy="dynamic",
+        backref=db.backref("followers", lazy="dynamic"),
+        # backref=db.backref("followers", lazy="dynamic"),
     )
 
 
@@ -64,9 +63,13 @@ class Blog(db.Model):
 #     """This is the model for the friends relationship in blog-store.db"""
 
 #     __table_name__ = "friends"
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id_1 = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-#     user_id_2 = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+#     # id = db.Column(db.Integer, primary_key=True)
+#     user_id_1 = db.Column(
+#         db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True
+#     )
+#     user_id_2 = db.Column(
+#         db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True
+#     )
 
 
 class UserBlog(db.Model):
