@@ -2,9 +2,11 @@ from datetime import datetime
 
 from flask_security import RoleMixin, UserMixin
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
+BaseModel: DeclarativeMeta = db.Model
 
 Friends = db.Table(
     "friends",
@@ -12,7 +14,7 @@ Friends = db.Table(
     db.Column("friend_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
 )
 # Define a User model for Flask-Security
-class User(db.Model, UserMixin):
+class User(BaseModel, UserMixin):
     """This is the model for the user table in blog-store.db"""
 
     __table_name__ = "user"
@@ -35,11 +37,10 @@ class User(db.Model, UserMixin):
         primaryjoin=("friends.c.user_id == User.id"),
         secondaryjoin=("friends.c.friend_id == User.id"),
         backref=db.backref("followers", lazy="dynamic"),
-        # backref=db.backref("followers", lazy="dynamic"),
     )
 
 
-class Blog(db.Model):
+class Blog(BaseModel):
     """This is the model for the blog table in blog-store.db"""
 
     __table_name__ = "blog"
@@ -47,7 +48,6 @@ class Blog(db.Model):
     title = db.Column(db.String(255), nullable=False)
     caption = db.Column(db.String(250), nullable=False)
     image_url = db.Column(db.String(250))
-    # content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(
         db.DateTime, nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow
@@ -59,20 +59,7 @@ class Blog(db.Model):
         return f"<Blog {self.id}>"
 
 
-# class Friends(db.Model):
-#     """This is the model for the friends relationship in blog-store.db"""
-
-#     __table_name__ = "friends"
-#     # id = db.Column(db.Integer, primary_key=True)
-#     user_id_1 = db.Column(
-#         db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True
-#     )
-#     user_id_2 = db.Column(
-#         db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True
-#     )
-
-
-class UserBlog(db.Model):
+class UserBlog(BaseModel):
     """This is the model for the user-blog relationship in blog-store.db"""
 
     __table_name__ = "user_blog"
@@ -87,21 +74,21 @@ class UserBlog(db.Model):
 
 
 # Define a Role model for Flask-Security
-class Role(db.Model, RoleMixin):
+class Role(BaseModel, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
 
 # Define a UserRoles model for Flask-Security
-class UserRoles(db.Model):
+class UserRoles(BaseModel):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey("user.id", ondelete="CASCADE"))
     role_id = db.Column(db.Integer(), db.ForeignKey("role.id", ondelete="CASCADE"))
 
 
 # Define a Token model for Flask-JWT-Extended
-class Token(db.Model):
+class Token(BaseModel):
     id = db.Column(db.Integer(), primary_key=True)
     jti = db.Column(db.String(36), nullable=False)
     token_type = db.Column(db.String(10), nullable=False)
