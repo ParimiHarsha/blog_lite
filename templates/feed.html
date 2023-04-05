@@ -1,26 +1,42 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Feed</title>
+  <title>Feed</title>
 </head>
+
 <body>
-    <h1>Feed</h1>
-    <p>Welcome to the feed! Here are the latest blog posts:</p>
+  <h1>Feed</h1>
+  <p>Welcome to the feed! Here are the latest blog posts:</p>
+  <div id="app">
+    <search-bar @search="searchUsers"></search-bar></search-bar>
     {% for post in posts %}
     <div>
-        <h3>{{ post.title }}</h3>
-        {% if post.image_url %}
-          <img src="{{ post.image_url }}" class="card-img-top" alt="{{ post.title }}" width="300" height="auto">
-        {% endif %}
-        <p>By {{ post.user.username }} on {{ post.updated_at }}</p>
-        <p>{{ post.body }}</p>
+      <h3>{{ post.title }}</h3>
+      {% if post.image_url %}
+      <img src="{{ post.image_url }}" class="card-img-top" alt="{{ post.title }}" width="300" height="auto">
+      {% endif %}
+      <p>By {{ post.user.username }} on {{ post.updated_at }}</p>
+      <p>{{ post.body }}</p>
     </div>
     {% endfor %}
     {% if current_user.is_authenticated %}
     <a href="{{ url_for('create_blog') }}">Create Blog</a>
     <a href="{{ url_for('user_profile', username=current_user.username) }}">My Page</a>
     {% else %}
-    <a href="{{ url_for('login') }}">Log in to Create Blog or View Your Page</a>
-    {% endif %}
+  </div>
+  <a href="{{ url_for('login') }}">Log in to Create Blog or View Your Page</a>
+  {% endif %}
 </body>
+
 </html>
+
+<script>
+  import searchTerm from './search_bar.vue'
+  new Vue({
+    el: '#app',
+    components: {
+      'search-bar': SearchBar
+    }
+  })
+</script>

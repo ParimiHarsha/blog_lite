@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
-from flask_login import current_user, login_required, login_user
+from flask_login import current_user, login_required
 from flask_restful import Api, Resource
 from flask_security import Security, SQLAlchemyUserDatastore
 

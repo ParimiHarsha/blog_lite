@@ -13,6 +13,7 @@ flask-security-too
 flask_restful
 bleach
 mypy
+flask_restful
 bcrypt
 Flask-SQLAlchemy==3.0.3
 Flask-WTF==1.1.1
