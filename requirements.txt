@@ -9,12 +9,15 @@ Flask-JWT-Extended==4.4.4
 Flask-Login==0.6.2
 Flask-Mail==0.9.1
 Flask-Principal==0.4.0
+celery[redis]
+redis
 flask-security-too
 flask_restful
 bleach
 mypy
 flask_restful
 bcrypt
+pandas
 Flask-SQLAlchemy==3.0.3
 Flask-WTF==1.1.1
 greenlet==2.0.2
