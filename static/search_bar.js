@@ -22,7 +22,7 @@ Vue.component('search-bar', {
         searchUsers() {
             // Send a GET request to the server with the search term
             // and update the searchResults array with the results
-            const response = fetch('http://127.0.0.1:5000/api/search', {
+            const response = fetch('http://127.0.0.1:8080/api/search', {
                 headers: {
                     "Content-type": "application/json",
                     // "Authentication-Token":this.auth_token

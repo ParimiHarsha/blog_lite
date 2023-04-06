@@ -2,7 +2,7 @@ from flask import jsonify, make_response, request
 from flask.views import MethodView
 from flask_login import current_user
 
-from application.models import User, db
+from application.models import Blog, User, db
 
 
 class SearchAPI(MethodView):
@@ -19,16 +19,8 @@ class SearchAPI(MethodView):
             )
         else:
             users = User.query.limit(5).all()
-        result = []
-        for user in users:
-            result.append(
-                {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                    "is_followed": current_user.is_following(user),
-                }
-            )
+
+        result = [user.to_dict() for user in users]
         return jsonify({"users": result})
 
 
@@ -79,3 +71,14 @@ class UnfollowAPI(MethodView):
         return make_response(
             jsonify({"message": f"You are no longer following {user.username}."})
         )
+
+
+class BlogsAPI(MethodView):
+    """API which returns a list of blogs."""
+
+    def get(self):
+        blogs = Blog.query.order_by(
+            Blog.updated_at.desc()
+        ).all()  # We can also only return the blogs of followers first and then all other blogs
+        blogs_list = [blog.to_dict() for blog in blogs]
+        return make_response(jsonify({"blogs": blogs_list}))

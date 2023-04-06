@@ -13,6 +13,7 @@ celery[redis]
 redis
 flask-security-too
 flask_restful
+flask_cors
 bleach
 mypy
 flask_restful

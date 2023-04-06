@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from flask_login import current_user
 from flask_security import RoleMixin, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import DeclarativeMeta
@@ -12,6 +13,8 @@ Friends = db.Table(
     db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
     db.Column("friend_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
 )
+
+
 # Define a User model for Flask-Security
 class User(BaseModel, UserMixin):
     """This is the model for the user table in blog-store.db"""
@@ -56,6 +59,16 @@ class User(BaseModel, UserMixin):
             self.followers.remove(user)
             db.session.commit()
 
+    def to_dict(self):
+        """Converts User object into a dict"""
+
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "is_followed": current_user.is_following(self),
+        }
+
 
 class Blog(BaseModel):
     """This is the model for the blog table in blog-store.db"""
@@ -74,6 +87,19 @@ class Blog(BaseModel):
 
     def __repr__(self):
         return f"<Blog {self.id}>"
+
+    def to_dict(self):
+        """Converts Blog object into a dict"""
+
+        return {
+            "id": self.id,
+            "title": self.title,
+            "caption": self.caption,
+            "image_url": self.image_url,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "user": self.user.to_dict(),
+        }
 
 
 class UserBlog(BaseModel):

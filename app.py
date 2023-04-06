@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_security import Security, SQLAlchemyUserDatastore
 
-from application.api import FollowAPI, SearchAPI, UnfollowAPI
+from application.api import BlogsAPI, FollowAPI, SearchAPI, UnfollowAPI
 from application.models import Role, User, db
 from application.workers import ContextTask, celery
 from config import LocalDevelopmentConfig
@@ -40,10 +40,22 @@ api.add_resource(
     UnfollowAPI,
     "/api/users/<int:user_id>/unfollow",
 )
-
+api.add_resource(BlogsAPI, "/api/blogs")
 
 if __name__ == "__main__":
     # with app.app_context():
     #     db.drop_all()  # to reset all the tables in the database
     #     db.create_all()
     app.run(host="0.0.0.0", debug=True, port=8080)
+
+
+# {% for post in posts %}
+#     <div>
+#       <h3>{{ post.title }}</h3>
+#       {% if post.image_url %}
+#       <img src="{{ post.image_url }}" class="card-img-top" alt="{{ post.title }}" width="300" height="auto">
+#       {% endif %}
+#       <p>By {{ post.user.username }} on {{ post.updated_at }}</p>
+#       <p>{{ post.body }}</p>
+#     </div>
+#     {% endfor %}
