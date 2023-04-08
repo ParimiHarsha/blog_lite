@@ -40,7 +40,12 @@ api.add_resource(
     UnfollowAPI,
     "/api/users/<int:user_id>/unfollow",
 )
-api.add_resource(BlogsAPI, "/api/blogs")
+api.add_resource(
+    BlogsAPI,
+    "/api/blogs",
+    "/api/blogs/<int:blog_id>/delete",
+    "/api/blogs/<int:blog_id>/put",
+)
 
 if __name__ == "__main__":
     # with app.app_context():
@@ -49,13 +54,4 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=8080)
 
 
-# {% for post in posts %}
-#     <div>
-#       <h3>{{ post.title }}</h3>
-#       {% if post.image_url %}
-#       <img src="{{ post.image_url }}" class="card-img-top" alt="{{ post.title }}" width="300" height="auto">
-#       {% endif %}
-#       <p>By {{ post.user.username }} on {{ post.updated_at }}</p>
-#       <p>{{ post.body }}</p>
-#     </div>
-#     {% endfor %}
+# <button @click="editBlog(blog.id)" class="btn btn-primary">Edit</button>

@@ -77,17 +77,17 @@ def delete_blog(id):
     return redirect(url_for("feed"))  # maybe change this to userpage later
 
 
-@app.route("/user/<username>")
+@app.route("/userprofile")
 @login_required
-def user_profile(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    blog_count = Blog.query.filter_by(user_id=user.id).count()
-    followers_count = len(user.followers.all())
-    following_count = len(user.friends)
-    blog_posts = Blog.query.filter_by(user_id=user.id).all()
+def user_profile():
+    # user = User.query.filter_by(username=username).first_or_404()
+    blog_count = Blog.query.filter_by(user_id=current_user.id).count()
+    followers_count = len(current_user.followers.all())
+    following_count = len(current_user.friends)
+    blog_posts = Blog.query.filter_by(user_id=current_user.id).all()
     return render_template(
         "user_profile.html",
-        user=user,
+        user=current_user,
         blog_count=blog_count,
         followers_count=followers_count,
         following_count=following_count,

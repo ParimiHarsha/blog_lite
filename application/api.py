@@ -9,8 +9,7 @@ class SearchAPI(MethodView):
     """API for searching users"""
 
     def get(self):
-        search_term = request.args.get("searchTerm")
-
+        search_term = request.args.get("search")
         if search_term:
             users = (
                 User.query.filter(User.username.ilike(f"%{search_term}%"))
@@ -18,8 +17,7 @@ class SearchAPI(MethodView):
                 .all()
             )
         else:
-            users = User.query.limit(5).all()
-
+            users = []
         result = [user.to_dict() for user in users]
         return jsonify({"users": result})
 
@@ -74,7 +72,7 @@ class UnfollowAPI(MethodView):
 
 
 class BlogsAPI(MethodView):
-    """API which returns a list of blogs."""
+    """API for blogs."""
 
     def get(self):
         blogs = Blog.query.order_by(
@@ -82,3 +80,30 @@ class BlogsAPI(MethodView):
         ).all()  # We can also only return the blogs of followers first and then all other blogs
         blogs_list = [blog.to_dict() for blog in blogs]
         return make_response(jsonify({"blogs": blogs_list}))
+
+    def put(self, blog_id):
+        # Get the blog with the given ID from the database
+        blog = Blog.query.get_or_404(blog_id)
+
+        # Parse the JSON request data
+        data = request.get_json()
+
+        # Update the blog fields with the data from the request
+        blog.title = data.get("title", blog.title)
+        blog.caption = data.get("caption", blog.caption)
+        blog.image_url = data.get("image_url", blog.image_url)
+
+        # Update the blog in the database
+        db.session.commit()
+
+        # Return a JSON response with a success message
+        return jsonify({"message": "Blog updated successfully"})
+
+    def delete(self, blog_id):
+        blog = Blog.query.get(blog_id)
+        if not blog:
+            return make_response(jsonify({"message": "Blog not found"}), 404)
+        db.session.delete(blog)
+        db.session.commit()
+
+        return make_response(jsonify({"message": "Blog deleted successfully"}), 200)
