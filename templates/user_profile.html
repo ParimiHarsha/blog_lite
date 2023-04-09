@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>User Profile</title>
-  </head>
-  <body>
-    <h1>User Profile</h1>
-    <p><strong>Username:</strong> {{ user.username }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Number of Blogs:</strong> {{ blog_count }}</p>
-    <p><strong>Number of Followers:</strong> {{ followers_count }}</p>
-    <p><strong>Number of Following:</strong> {{ following_count }}</p>
 
-    <h2>Blog Posts</h2>
-    {% for post in posts %}
-    <div>
-      <h3>{{ post.title }}</h3>
-      <p>{{ post.caption }}</p>
-      {% if post.image_url %}
-      <img src="{{ post.image_url }}" alt="{{ post.title }}" style="max-width: 100%">
-      {% endif %}
-      <p><small>Posted on {{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
+<head>
+  <title>User Profile</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script type="text/JavaScript">var temp = {{auth_token|tojson}};</script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>User Profile</h1>
+    <div class="row">
+      <div class="col-md-6">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Number of Blogs:</strong> {{ blog_count }}</p>
+        <p><strong>Number of Followers:</strong> {{ followers_count }}</p>
+        <p><strong>Number of Following:</strong> {{ following_count }}</p>
+      </div>
     </div>
-    {% endfor %}
+
+    <h3>Blog Posts</h3>
+    <div id="blogs">
+      <blogs user_id={{user.id}}></blogs>
+    </div>
     <div class="row">
       <div class="col-12">
         <a href="{{ url_for('feed') }}" class="btn btn-primary">Back to Feed</a>
       </div>
     </div>
-  </body>
+  </div>
+
+</body>
+<!-- Include Bootstrap JS and jQuery -->
+<script type="text/javascript" src="../static/user_blogs.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 </html>

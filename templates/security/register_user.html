@@ -2,18 +2,36 @@
 {% from "security/_macros.html" import render_field_with_errors, render_field, render_form_errors %}
 
 {% block content %}
-  {% include "security/_messages.html" %}
-  <h1>{{ _fsdomain('Register') }}</h1>
-  <form action="/register?next=/login" method="POST" name="register_user_form">
-    {{ register_user_form.hidden_tag() }}
-    {{ render_form_errors(register_user_form) }}
-    {{ render_field_with_errors(register_user_form.email) }}
-    {% if security.username_enable %}{{ render_field_with_errors(register_user_form.username) }}{% endif %}
-    {{ render_field_with_errors(register_user_form.password) }}
-    {% if register_user_form.password_confirm %}
-      {{ render_field_with_errors(register_user_form.password_confirm) }}
-    {% endif %}
-    {{ render_field(register_user_form.submit) }}
-  </form>
-  {% include "security/_menu.html" %}
+{% include "security/_messages.html" %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h1 class="text-center mb-4">{{ _fsdomain('Register') }}</h1>
+      <form action="/register?next=/" method="POST" name="register_user_form">
+        {{ register_user_form.hidden_tag() }}
+        {{ render_form_errors(register_user_form) }}
+        <div class="form-group">
+          {{ render_field_with_errors(register_user_form.email, classes="form-control" )}}
+        </div>
+        {% if security.username_enable %}
+        <div class="form-group">
+          {{ render_field_with_errors(register_user_form.username, classes="form-control" )}}
+        </div>
+        {% endif %}
+        <div class="form-group">
+          {{ render_field_with_errors(register_user_form.password, classes="form-control") }}
+        </div>
+        {% if register_user_form.password_confirm %}
+        <div class="form-group">
+          {{ render_field_with_errors(register_user_form.password_confirm, classes="form-control",
+          ) }}
+        </div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary btn-block">{{ "Register" }}</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% include "security/_menu.html" %}
 {% endblock content %}

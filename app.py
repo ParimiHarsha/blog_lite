@@ -2,14 +2,20 @@ from flask import Flask
 from flask_restful import Api
 from flask_security import Security, SQLAlchemyUserDatastore
 
-from application.api import BlogsAPI, FollowAPI, SearchAPI, UnfollowAPI
+from application.api import (
+    BlogsAPI,
+    CurrentUserAPI,
+    ExportCSVAPI,
+    FollowAPI,
+    SearchAPI,
+    UnfollowAPI,
+)
+from application.config import LocalDevelopmentConfig
 from application.models import Role, User, db
 from application.workers import ContextTask, celery
-from config import LocalDevelopmentConfig
 
 app = Flask(__name__)
 app.config.from_object(LocalDevelopmentConfig)
-
 # Define the Flask-Security data store
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
@@ -41,12 +47,18 @@ api.add_resource(
     "/api/users/<int:user_id>/unfollow",
 )
 api.add_resource(
+    CurrentUserAPI,
+    "/api/current-user",
+)
+api.add_resource(
     BlogsAPI,
     "/api/blogs",
     "/api/blogs/<int:blog_id>/delete",
     "/api/blogs/<int:blog_id>/put",
 )
+api.add_resource(ExportCSVAPI, "/api/export-csv")
 
+# Run the flask app
 if __name__ == "__main__":
     # with app.app_context():
     #     db.drop_all()  # to reset all the tables in the database
@@ -54,4 +66,4 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=8080)
 
 
-# <button @click="editBlog(blog.id)" class="btn btn-primary">Edit</button>
+# TODO: add href to user profile

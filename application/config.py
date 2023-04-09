@@ -30,3 +30,5 @@ class LocalDevelopmentConfig(Config):
     SECURITY_SEND_REGISTER_EMAIL = False
     SECURITY_UNAUTHORIZED_VIEW = None
     SECURITY_USERNAME_ENABLE = True
+    CACHE_TYPE = "SimpleCache"
+    CACHE_DEFAULT_TIMEOUT = 300

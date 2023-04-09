@@ -5,32 +5,54 @@
   <title>Feed</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-
-<body class="container">
-  <h1>Feed</h1>
-  <p>Welcome to the feed! Here are the latest blog posts:</p>
-  <div id="app">
-    <search-bar @search="searchUsers"></search-bar>
-  </div>
-  <div id='blogs'>
-    {% if current_user.is_authenticated %}
-    <a href="{{ url_for('create_blog') }}">Create Blog</a>
-    <a href="{{ url_for('user_profile', username=current_user.username) }}">My Page</a>
-    {% else %}
-    <a href="{{ url_for('login') }}">Log in to Create Blog or View Your Page</a>
-    {% endif %}
-    <blogs></blogs>
-  </div>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script type="text/JavaScript">var temp = {{auth_token|tojson}};</script>
+</head>
+
+<body class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Feed</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        {% if current_user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('create_blog') }}">Create Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{'user_profile/'+ current_user.id|string}}">My
+            Page</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ '/logout_user' }}">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('login') }}">Log in</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+  <div id="app">
+    <search-bar @search="searchUsers"></search-bar>
+  </div>
+  <div class="jumbotron">
+    <h1 class="display-4">Welcome to the Feed!</h1>
+    <p class="lead">Here are the latest blog posts:</p>
+    <div class="container" id="blogs">
+      <blogs class='col-6 text-center' user_id={{current_user.id}}></blogs>
+    </div>
+  </div>
 </body>
-<script type="text/javascript"
-  src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="../static/search_bar.js"></script>
 <script type="text/javascript" src="../static/blogs.js"></script>
 

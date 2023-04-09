@@ -41,6 +41,10 @@ class User(BaseModel, UserMixin):
         backref=db.backref("followers", lazy="dynamic"),
     )
 
+    def blogs(self):
+        """"""
+        return Blog.query.filter_by(user_id=self.id).all()
+
     def is_following(self, user) -> bool:
         """user should be in the list of followers of current_user"""
         return user in self.followers.all()
@@ -109,11 +113,6 @@ class UserBlog(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     blog_id = db.Column(db.Integer, db.ForeignKey("blog.id"), nullable=False)
-
-    # Add a unique constraint to ensure a user can only write one blog per post
-    # __table_args__ = (
-    #     db.UniqueConstraint("user_id", "blog_id", name="unique_user_blog"),
-    # )
 
 
 # Define a Role model for Flask-Security

@@ -1,10 +1,45 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>BlogPost</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			margin: 0;
+			padding: 0;
+		}
+
+		h1 {
+			color: #333;
+			font-size: 36px;
+			margin-top: 40px;
+			text-align: center;
+		}
+
+		a {
+			color: #0099ff;
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		p {
+			color: #666;
+			font-size: 18px;
+			margin-top: 20px;
+			text-align: center;
+		}
+	</style>
 </head>
+
 <body>
 	<h1>Welcome to BlogPost</h1>
-	<p>Please <a href="/login">login</a> or <a href="/register">signup</a> to continue.</p>
+	<p>Please <a href="/login?next=/">login</a> or <a href="/register?next=/">signup</a> to continue.</p>
 </body>
+
 </html>

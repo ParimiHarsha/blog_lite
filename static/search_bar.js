@@ -1,21 +1,36 @@
 Vue.component('search-bar', {
     template: `
-      <div>
-        <input v-model="searchTerm" type="text" placeholder="Search for users...">
-        <ul>
-          <li v-for="user in searchResults" :key="user.id">
-            <div>{{ user.username }}</div>
-            <button v-if="!user.is_followed" @click="follow(user)">Follow</button>
-            <button v-if="user.is_followed" @click="unfollow(user)">Unfollow</button>
-            <button @click="viewProfile(user)">View Profile</button>
-          </li>
-        </ul>
-      </div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+            <div class="input-group mb-3">
+                <input v-model="searchTerm" type="text" class="form-control" placeholder="Search for users...">
+                <div class="input-group-append">
+                <button class="btn btn-primary" type="button">Search</button>
+                </div>
+            </div>
+            <ul class="list-group">
+                <li v-for="user in searchResults" :key="user.id"
+                class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <h5>{{ user.username }}</h5>
+                </div>
+                <div>
+                    <button v-if="!user.is_followed" class="btn btn-primary" @click="follow(user)">Follow</button>
+                    <button v-if="user.is_followed" class="btn btn-secondary" @click="unfollow(user)">Unfollow</button>
+                    <a :href="'/user_profile/'+ user.id">View Profile</a>
+                </div>
+                </li>
+            </ul>
+            </div>
+        </div>
+    </div>
     `,
     data() {
         return {
             searchTerm: '',
             searchResults: [],
+            auth_token: temp,
         };
     },
     methods: {
@@ -25,7 +40,7 @@ Vue.component('search-bar', {
             const response = fetch(`http://127.0.0.1:8080/api/search?search=${encodeURIComponent(this.searchTerm)}`, {
                 headers: {
                     "Content-type": "application/json",
-                    // "Authentication-Token":this.auth_token
+                    "Authentication-Token": this.auth_token
                 },
                 method: "GET",
             }).then((response) => response.json())
@@ -33,6 +48,7 @@ Vue.component('search-bar', {
                     this.searchResults = data.users;
                 })
                 .catch((error) => {
+                    console.log(this.auth_token)
                     console.log(error);
                 });
         },
@@ -45,7 +61,7 @@ Vue.component('search-bar', {
             const response = fetch('http://127.0.0.1:8080/api/users/' + user.id + '/follow', {
                 headers: {
                     "Content-type": "application/json",
-                    // "Authentication-Token":this.auth_token
+                    "Authentication-Token": this.auth_token
                 },
                 method: "POST",
             })
@@ -68,7 +84,7 @@ Vue.component('search-bar', {
             const response = fetch('http://127.0.0.1:8080/api/users/' + user.id + '/unfollow', {
                 headers: {
                     "Content-type": "application/json",
-                    // "Authentication-Token":this.auth_token
+                    "Authentication-Token": this.auth_token
                 },
                 method: "POST",
             })
