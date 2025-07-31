@@ -117,23 +117,6 @@ Vue.component('blogs',
                 }
                 this.blogs = this.user_blogs
                 console.log(user_blogs, blogs)
-
-
-
-                // const response = fetch('http://127.0.0.1:8080/api/user/blogs', {
-                //   headers: {
-                //     "Content-type": "application/json",
-                //     // "Authentication-Token":this.auth_token
-                //   },
-                //   method: "GET",
-                // }).then((response) => response.json())
-                //   .then(response => {
-                //     this.blogs = response.user_blogs;
-                //   })
-                //   .catch(error => {
-                //     console.log(error);
-                //   });
-
             },
             editBlog(blog) {
                 // Get the edited values from the form fields

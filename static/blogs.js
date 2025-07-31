@@ -179,13 +179,6 @@ Vue.component('blogs',
           this.blogs = []; // clear user_blogs when navigating away from a user page
         }
       },
-      // userId(newValue, oldValue) {
-      //   if (this.userPage && newValue) {
-      //     this.fetchUserBlogs(newValue);
-      //   } else {
-      //     this.blogs = []; // clear user_blogs when navigating away from a user page
-      //   }
-      // }
     }
   }
 )
